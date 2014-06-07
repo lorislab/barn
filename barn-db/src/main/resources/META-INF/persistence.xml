@@ -1,0 +1,23 @@
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0">
+    <persistence-unit name="org.lorislab.barn.barn-db">
+        <!-- The datasource name -->
+        <jta-data-source>java:jboss/datasources/org.lorislab.barn.barn-db</jta-data-source>       
+        <properties>
+            <!-- Update database flag. Only for development -->
+            <!--<property name="hibernate.hbm2ddl.auto" value="update" />-->
+            <!-- Show SQL statment. Only for development -->
+            <property name="hibernate.show_sql" value="false" />
+            <!-- Hibernate database dialect -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyTenSixDialect"/>
+			<!--<property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>-->
+			<!--<property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect"/>-->			
+            <!-- Import the default configuration -->
+			<!--
+            <property name="hibernate.hbm2ddl.import_files" value="/sql/config.sql,/sql/user_and_roles.sql,/sql/data.sql" />
+			-->
+        </properties>        
+    </persistence-unit>
+</persistence>

@@ -1,0 +1,38 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+    
+	<parent>
+		<groupId>org.lorislab.barn</groupId>
+		<artifactId>barn</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../</relativePath>
+	</parent>
+	
+	<artifactId>barn-adapter-resteasy</artifactId> 
+	<name>barn-adapter-resteasy</name>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.lorislab.barn</groupId>
+			<artifactId>barn-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<!-- META-INF SERVICES -->
+		<dependency>
+			<groupId>org.kohsuke.metainf-services</groupId>
+			<artifactId>metainf-services</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<!-- RESTEASY -->                   
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxrs</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.spec.javax.ws.rs</groupId>
+			<artifactId>jboss-jaxrs-api_1.1_spec</artifactId>			
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+</project>

@@ -17,6 +17,7 @@ package org.lorislab.barn.db.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 import org.lorislab.barn.api.model.Attribute;
 import org.lorislab.jel.jpa.model.Persistent;
 
@@ -26,6 +27,7 @@ import org.lorislab.jel.jpa.model.Persistent;
  * @author Andrej Petras
  */
 @Entity
+@Table(name = "BARN_ATTRIBUTE")
 public class DBAttribute extends Persistent implements Attribute {
 
     /**

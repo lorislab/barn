@@ -26,8 +26,10 @@ import javax.ejb.Local;
 import javax.ejb.Singleton;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import org.lorislab.barn.api.factory.ServiceFactory;
 import org.lorislab.barn.api.model.Attribute;
 import org.lorislab.barn.api.model.Config;
+import org.lorislab.barn.api.service.ApplicationService;
 import org.lorislab.barn.api.service.ConfigService;
 import org.lorislab.barn.api.service.ConfigurationService;
 import org.lorislab.barn.api.util.ModelUtil;
@@ -42,6 +44,10 @@ import org.lorislab.barn.api.util.ModelUtil;
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class ConfigurationStandaloneServiceBean implements ConfigurationService {
 
+    private String application;
+    
+    private String version;
+    
     /**
      * The cache.
      */
@@ -64,7 +70,13 @@ public class ConfigurationStandaloneServiceBean implements ConfigurationService 
     @Override
     public void reload() {
         cache = new HashMap<>();
-        List<Config> configs = service.getAllConfig();
+        
+        ApplicationService appService = ServiceFactory.getApplicationService();
+        if (appService != null) {
+            application = appService.getApplication();
+            version = appService.getVersion();
+        }
+        List<Config> configs = service.getAllConfig(application, version);
         if (configs != null) {
             for (Config config : configs) {
                 Object tmp = ModelUtil.createObject(config);
@@ -104,7 +116,7 @@ public class ConfigurationStandaloneServiceBean implements ConfigurationService 
      */
     private <T> T saveConfiguration(T data) {
         Class clazz = data.getClass();
-        Config config = service.getConfigByType(clazz.getName());
+        Config config = service.getConfigByType(application, version, clazz.getName());
         if (config == null) {
             config = service.createConfig();
             config.setType(clazz.getName());

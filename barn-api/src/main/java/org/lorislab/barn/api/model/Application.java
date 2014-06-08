@@ -14,27 +14,28 @@
  * limitations under the License.
  */
 
-package org.lorislab.barn.api.service;
+package org.lorislab.barn.api.model;
 
-import java.util.List;
-import org.lorislab.barn.api.model.Attribute;
-import org.lorislab.barn.api.model.Config;
+import java.util.Date;
+import java.util.Set;
 
 /**
  *
  * @author Andrej Petras
- * @param <C>
- * @param <A>
  */
-public interface ConfigService<C extends Config, A extends Attribute> {
+public interface Application {
     
-    public List<C> getAllConfig(String application, String version);
+    public String getName();
     
-    public C saveConfig(C config);
-             
-    public C getConfigByType(String application, String version, String type);
+    public void setName(String name);
     
-    public C createConfig();
+    public Date getDate();
     
-    public A createAttribute();
+    public void setDate(Date date);
+    
+    public String getRelease();
+    
+    public void setRelease(String release);
+    
+    public Set<? extends Config> getConfigs();
 }

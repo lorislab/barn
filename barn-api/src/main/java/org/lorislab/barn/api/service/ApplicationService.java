@@ -13,28 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lorislab.barn.api.service;
 
-import java.util.List;
-import org.lorislab.barn.api.model.Attribute;
-import org.lorislab.barn.api.model.Config;
-
 /**
+ * The application service.
  *
  * @author Andrej Petras
- * @param <C>
- * @param <A>
  */
-public interface ConfigService<C extends Config, A extends Attribute> {
-    
-    public List<C> getAllConfig(String application, String version);
-    
-    public C saveConfig(C config);
-             
-    public C getConfigByType(String application, String version, String type);
-    
-    public C createConfig();
-    
-    public A createAttribute();
+public interface ApplicationService {
+
+    /**
+     * Gets the application key.
+     *
+     * @return the application key.
+     */
+    public String getApplication();
+
+    /**
+     * Gets the application version.
+     *
+     * @return the application version.
+     */
+    public String getVersion();
 }

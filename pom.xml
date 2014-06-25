@@ -44,7 +44,7 @@
 			<dependency>
 				<groupId>org.lorislab.jel</groupId>
 				<artifactId>jel-bom</artifactId>
-				<version>0.0.8-SNAPSHOT</version>
+				<version>0.0.8</version>
 				<type>pom</type>
 				<scope>import</scope>				
 			</dependency>	

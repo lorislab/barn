@@ -30,6 +30,9 @@ import org.lorislab.barn.api.model.Config;
  */
 public class ModelUtil {
     
+    /**
+     * The logger for this class.
+     */
     private static final Logger LOGGER = Logger.getLogger(ModelUtil.class.getName());
     
     /**
@@ -94,12 +97,7 @@ public class ModelUtil {
             LOGGER.log(Level.SEVERE, null, ex);
         }
     }    
-    
-    
-    
-    
-    
-    
+
     /**
      * Updates the attribute in the configuration model by configuration object
      * field.
@@ -131,6 +129,7 @@ public class ModelUtil {
      *
      * @param object the object.
      * @param field the field.
+     * @param attribute the attribute.
      * @return the corresponding attribute.
      */
     public static Attribute createAttribute(final Attribute attribute, final Object object, Field field) {        

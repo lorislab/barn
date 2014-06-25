@@ -21,16 +21,17 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import org.lorislab.barn.api.service.ConfigService;
+import org.lorislab.barn.api.service.ConfigurationStoreService;
 import org.lorislab.barn.db.model.DBApplication;
 import org.lorislab.barn.db.model.DBApplication_;
-import org.lorislab.barn.db.model.DBAttribute;
 import org.lorislab.barn.db.model.DBConfig;
 import org.lorislab.barn.db.model.DBConfig_;
 import org.lorislab.jel.ejb.services.AbstractEntityServiceBean;
@@ -41,24 +42,31 @@ import org.lorislab.jel.ejb.services.AbstractEntityServiceBean;
  * @author Andrej Petras
  */
 @Stateless
-@Local(ConfigService.class)
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-public class ConfigServiceBean extends AbstractEntityServiceBean<DBConfig> implements ConfigService<DBConfig, DBAttribute> {
+public class DBConfigService extends AbstractEntityServiceBean<DBConfig> {
 
     /**
-     * The UID for this class.
+     * The entity manager.
      */
-    private static final long serialVersionUID = 3429620108065122167L;
+    @PersistenceContext
+    private EntityManager em;
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected EntityManager getEntityManager() {
+        return em;
+    }
+    
     /**
      * Gets all configuration models.
      *
      * @param application the application.
-     * @param version the version.
+     * @param release the version.
      * @return the list of all configuration models.
      */
-    @Override
-    public List<DBConfig> getAllConfig(String application, String version) {
+    public List<DBConfig> getAllConfig(String application, String release) {
         List<DBConfig> result;
 
         CriteriaBuilder cb = getBaseEAO().getCriteriaBuilder();
@@ -67,10 +75,10 @@ public class ConfigServiceBean extends AbstractEntityServiceBean<DBConfig> imple
 
         List<Predicate> predicates = new ArrayList<>();
 
-        if (application != null && version != null) {
+        if (application != null ) {
             Join<DBConfig, DBApplication> join = root.join(DBConfig_.application);
             predicates.add(cb.equal(join.get(DBApplication_.name), application));
-            predicates.add(cb.equal(join.get(DBApplication_.release), version));
+            predicates.add(cb.equal(join.get(DBApplication_.release), release));
         }
 
         if (!predicates.isEmpty()) {
@@ -88,9 +96,8 @@ public class ConfigServiceBean extends AbstractEntityServiceBean<DBConfig> imple
      *
      * @param config the configuration model.
      * @return the saved configuration model.
-     */
+     */    
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    @Override
     public DBConfig saveConfig(DBConfig config) {
         return this.save(config);
     }
@@ -103,7 +110,6 @@ public class ConfigServiceBean extends AbstractEntityServiceBean<DBConfig> imple
      * @param type the type.
      * @return the corresponding configuration model to the type.
      */
-    @Override
     public DBConfig getConfigByType(String application, String version, String type) {
         DBConfig result = null;
 
@@ -131,16 +137,6 @@ public class ConfigServiceBean extends AbstractEntityServiceBean<DBConfig> imple
         }
 
         return result;
-    }
-
-    @Override
-    public DBConfig createConfig() {
-        return new DBConfig();
-    }
-
-    @Override
-    public DBAttribute createAttribute() {
-        return new DBAttribute();
     }
 
 }

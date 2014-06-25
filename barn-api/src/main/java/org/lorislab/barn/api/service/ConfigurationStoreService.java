@@ -21,20 +21,20 @@ import org.lorislab.barn.api.model.Attribute;
 import org.lorislab.barn.api.model.Config;
 
 /**
- *
+ * The configuration store service.
+ * 
  * @author Andrej Petras
- * @param <C>
- * @param <A>
  */
-public interface ConfigService<C extends Config, A extends Attribute> {
+public interface ConfigurationStoreService {
+
+    public List<Config> getAllConfig(String application, String version) throws Exception;
     
-    public List<C> getAllConfig(String application, String version);
-    
-    public C saveConfig(C config);
+    public Config saveConfig(Config config) throws Exception;
              
-    public C getConfigByType(String application, String version, String type);
+    public Config getConfigByType(String application, String version, String type) throws Exception;
     
-    public C createConfig();
+    public Config createConfig(String application, String version, String type) throws Exception;
     
-    public A createAttribute();
+    public Attribute createAttribute() throws Exception;
+
 }

@@ -13,19 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lorislab.barn.api.service;
 
 /**
  * The configuration service.
- * 
+ *
  * @author Andrej Petras
  */
 public interface ConfigurationService {
- 
+
+    /**
+     * Reloads the configuration.
+     */
     public void reload();
-    
+
+    /**
+     * Sets the configuration data.
+     *
+     * @param <T> the configuration type.
+     * @param data the configuration data.
+     * @return the corresponding configuration.
+     */
     public <T> T setConfiguration(T data);
-    
+
+    /**
+     * Gets the configuration data.
+     *
+     * @param <T> the configuration type.
+     * @param clazz the configuration data.
+     * @return the corresponding configuration.
+     */
     public <T> T getConfiguration(Class<T> clazz);
 }

@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lorislab.barn.db.ejb;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import org.lorislab.barn.api.model.Attribute;
 import org.lorislab.barn.api.model.Config;
 import org.lorislab.barn.api.service.ConfigurationStoreService;
 import org.lorislab.barn.db.model.DBApplication;
@@ -33,7 +33,7 @@ import org.lorislab.jel.ejb.exception.ServiceException;
 
 /**
  * The DB configuration store service.
- * 
+ *
  * @author Andrej Petras
  */
 @Stateless
@@ -41,55 +41,77 @@ import org.lorislab.jel.ejb.exception.ServiceException;
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class DBConfigurationStoreService implements ConfigurationStoreService {
 
+    /**
+     * The application service.
+     */
     @EJB
     private DBApplicationService appService;
-    
+
+    /**
+     * The configuration service.
+     */
     @EJB
     private DBConfigService configService;
-  
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List getAllConfig(String application, String version) throws ServiceException {
+    public List getAllConfig(String application, String version) throws Exception {
         return configService.getAllConfig(application, version);
     }
 
+    /**
+     * {@inheritDoc}
+     */    
     @Override
-    public Config saveConfig(Config config) throws ServiceException {
+    public Config saveConfig(Config config) throws Exception {
         Config result = null;
-        if (config instanceof DBConfig) {            
+        if (config instanceof DBConfig) {
             result = configService.saveConfig((DBConfig) config);
         }
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     */    
     @Override
-    public Config getConfigByType(String application, String version, String type) throws ServiceException {
-        return configService.getConfigByType(application, version, type);
-    }
-
-    @Override
-    public Config createConfig(String application, String release, String type) throws ServiceException {
-        DBConfig result = new DBConfig();
-        result.setType(type);
+    public Config getConfigByType(String application, String release, String type, Set<String> attributes) throws Exception {
+        DBConfig result = configService.getConfigByType(application, release, type);
         
-        DBApplication app = appService.getApplication(application, release);
-        if (app == null) {
-            app = new DBApplication();
-            app.setName(application);
-            app.setRelease(release);
-            app.setDate(new Date());            
-            appService.saveApplication(app);
+        // create new configuration
+        if (result == null) {
+            result = new DBConfig();
+            result.setType(type);
+
+            // check the application
+            DBApplication app = appService.getApplication(application, release);
+            if (app == null) {
+                app = new DBApplication();
+                app.setName(application);
+                app.setRelease(release);
+                app.setDate(new Date());
+                appService.saveApplication(app);
+            }
+
+            result.setApplication(app);
         }
         
-        result.setApplication(app);
+        // check the attributes
+        if (attributes != null) {
+            Map<String, DBAttribute> map = result.getAttributes();
+            for (String name : attributes) {
+                DBAttribute attr = map.get(name);
+                if (attr == null) {
+                    attr = new DBAttribute();
+                    attr.setName(name);
+                    map.put(name, attr);
+                }
+            }
+        }
         
         return result;
     }
 
-    @Override
-    public Attribute createAttribute() throws Exception {
-        Attribute result = new DBAttribute();
-        return result;
-    }
-
-  
 }

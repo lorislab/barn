@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lorislab.barn.api.util;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.lorislab.barn.api.factory.ServiceFactory;
@@ -25,16 +28,58 @@ import org.lorislab.barn.api.model.Config;
 
 /**
  * The model utility class.
- * 
+ *
  * @author Andrej Petras
  */
 public class ModelUtil {
-    
+
     /**
      * The logger for this class.
      */
     private static final Logger LOGGER = Logger.getLogger(ModelUtil.class.getName());
-    
+
+    /**
+     * Gets the list of fields for the class.
+     *
+     * @param clazz the class.
+     * @return the corresponding list of fields.
+     */
+    public static Set<String> getFieldNames(Class clazz) {
+        Set<String> result = new HashSet<>();
+        if (clazz != null) {
+            Field[] fields = clazz.getDeclaredFields();
+            if (fields != null) {
+                for (Field field : fields) {
+                    if (!Modifier.isStatic(field.getModifiers())) {
+                        result.add(field.getName());
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Gets the list of fields for the class.
+     *
+     * @param clazz the class.
+     * @return the corresponding list of fields.
+     */
+    public static Set<Field> getFields(Class clazz) {
+        Set<Field> result = new HashSet<>();
+        if (clazz != null) {
+            Field[] fields = clazz.getDeclaredFields();
+            if (fields != null) {
+                for (Field field : fields) {
+                    if (!Modifier.isStatic(field.getModifiers())) {
+                        result.add(field);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
     /**
      * Creates the configuration object from the model.
      *
@@ -52,7 +97,7 @@ public class ModelUtil {
         }
         return result;
     }
-    
+
     /**
      * Creates object instance by class name.
      *
@@ -64,12 +109,12 @@ public class ModelUtil {
         try {
             Class clazz = Class.forName(name);
             result = clazz.newInstance();
-        } catch (Exception ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
         return result;
     }
-    
+
     /**
      * Sets the attribute to the configuration object.
      *
@@ -77,13 +122,13 @@ public class ModelUtil {
      * @param object the configuration object.
      * @param attribute the attribute.
      */
-    public static <T> void setAttributeToObject(T object, Attribute attribute) {
+    private static <T> void setAttributeToObject(T object, Attribute attribute) {
         try {
             String tmp = attribute.getValue();
 
             Class clazz = object.getClass();
             Field field = clazz.getDeclaredField(attribute.getName());
-            
+
             Object value = ServiceFactory.getAttributeAdapterService().readValue(tmp, field.getType());
 
             boolean accessible = field.isAccessible();
@@ -93,10 +138,10 @@ public class ModelUtil {
             } finally {
                 field.setAccessible(accessible);
             }
-        } catch (Exception ex) {
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
-    }    
+    }
 
     /**
      * Updates the attribute in the configuration model by configuration object
@@ -106,7 +151,7 @@ public class ModelUtil {
      * @param attribute the attribute.
      * @param field the field.
      */
-    public static void updateAttribute(Object object, Attribute attribute, Field field) {
+    private static void updateAttribute(Object object, Attribute attribute, Field field) {
         if (attribute != null) {
             try {
                 boolean accessible = field.isAccessible();
@@ -118,42 +163,32 @@ public class ModelUtil {
                 } finally {
                     field.setAccessible(accessible);
                 }
-            } catch (Exception ex) {
+            } catch (SecurityException | IllegalArgumentException | IllegalAccessException ex) {
                 LOGGER.log(Level.SEVERE, null, ex);
             }
         }
     }
-    
+
     /**
-     * Creates the attribute for the configuration object field.
+     * Updates the model.
      *
-     * @param object the object.
-     * @param field the field.
-     * @param attribute the attribute.
-     * @return the corresponding attribute.
+     * @param <T> the data.
+     * @param map the map of attributes.
+     * @param data the data.
+     * @return the corresponding change data.
      */
-    public static Attribute createAttribute(final Attribute attribute, final Object object, Field field) {        
-        try {
-            attribute.setName(field.getName());
-            boolean accessible = field.isAccessible();
-            try {
-                field.setAccessible(true);
-                Object value = field.get(object);
-                String tmp = ServiceFactory.getAttributeAdapterService().writeValue(value, field.getType());
-                attribute.setValue(tmp);
-            } finally {
-                field.setAccessible(accessible);
+    public static <T> T updateModel(final Map<String, ? extends Attribute> map, final T data) {
+
+        Set<Field> fields = getFields(data.getClass());
+        if (fields != null && map != null) {
+            for (Field field : fields) {
+                Attribute attr = map.get(field.getName());
+                if (attr != null) {
+                    updateAttribute(data, attr, field);
+                }
             }
-        } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, null, ex);
         }
-        return attribute;
+        return data;
     }
-    
 
-    
-
-    
-    
-    
 }

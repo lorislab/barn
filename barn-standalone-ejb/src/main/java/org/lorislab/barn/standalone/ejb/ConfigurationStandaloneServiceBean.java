@@ -15,10 +15,10 @@
  */
 package org.lorislab.barn.standalone.ejb;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
@@ -28,11 +28,10 @@ import javax.ejb.Singleton;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import org.lorislab.barn.api.factory.ServiceFactory;
-import org.lorislab.barn.api.model.Attribute;
 import org.lorislab.barn.api.model.Config;
 import org.lorislab.barn.api.service.ApplicationService;
-import org.lorislab.barn.api.service.ConfigurationStoreService;
 import org.lorislab.barn.api.service.ConfigurationService;
+import org.lorislab.barn.api.service.ConfigurationStoreService;
 import org.lorislab.barn.api.util.ModelUtil;
 
 /**
@@ -112,7 +111,17 @@ public class ConfigurationStandaloneServiceBean implements ConfigurationService 
         T result = null;
         if (data != null) {
             Class clazz = data.getClass();
-            result = (T) saveConfiguration(data);
+            
+            try {
+                Set<String> names = ModelUtil.getFieldNames(clazz);
+                Config config = service.getConfigByType(application, version, data.getClass().getName(), names);                                           
+                ModelUtil.updateModel(config.getAttributes(), data);
+                service.saveConfig(config);
+                
+            } catch (Exception ex) {
+                LOGGER.log(Level.SEVERE, "Error save the configuration model " + data.getClass().getName(), ex);
+            }
+        
             cache.put(clazz, result);
         }
         return result;
@@ -131,43 +140,4 @@ public class ConfigurationStandaloneServiceBean implements ConfigurationService 
         return result;
     }
 
-    /**
-     * Saves the configuration object.
-     *
-     * @param <T> the type.
-     * @param data the object.
-     * @return the saved configuration object.
-     */
-    private <T> T saveConfiguration(T data) {
-        try {
-            Class clazz = data.getClass();
-            Config config = service.getConfigByType(application, version, clazz.getName());
-            if (config == null) {
-                config = service.createConfig(application, version, clazz.getName());
-            }
-
-            Map attributes = config.getAttributes();
-
-            Field[] fields = clazz.getDeclaredFields();
-            if (fields != null) {
-
-                for (Field field : fields) {
-
-                    Attribute attr = (Attribute) attributes.get(field.getName());
-                    if (attr == null) {
-                        attr = service.createAttribute();
-                        attr = ModelUtil.createAttribute(attr, data, field);
-                        attributes.put(field.getName(), attr);
-                    } else {
-                        ModelUtil.updateAttribute(data, attr, field);
-                    }
-                }
-            }
-
-            service.saveConfig(config);
-        } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, "Error save the configuration model " + data.getClass().getName(), ex);
-        }
-        return data;
-    }
 }

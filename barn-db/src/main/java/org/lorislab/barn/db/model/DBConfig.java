@@ -60,7 +60,7 @@ public class DBConfig extends Persistent implements Config {
     /**
      * The map of configuration attributes.
      */
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @MapKeyColumn(name = "C_NAME")
     @JoinColumn(name = "C_CONFIG")
     private final Map<String, DBAttribute> attributes = new HashMap<>();

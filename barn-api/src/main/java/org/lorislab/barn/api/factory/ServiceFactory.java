@@ -25,7 +25,7 @@ import org.lorislab.barn.api.service.AttributeAdapterService;
  *
  * @author Andrej Petras
  */
-public class ServiceFactory {
+public final class ServiceFactory {
     
     private static AttributeAdapterService ATTR_ADAPTER_SERVICE;
     
@@ -43,6 +43,10 @@ public class ServiceFactory {
         if (iter.hasNext()) {
             APP_SERVICE = iter.next();
         }         
+    }
+    
+    private ServiceFactory() {
+        // empty constructor
     }
     
     public static ApplicationService getApplicationService() {

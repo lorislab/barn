@@ -27,14 +27,14 @@
 			</dependency>
 			<dependency>
 				<groupId>org.lorislab.barn</groupId>
-				<artifactId>barn-adapter-resteasy</artifactId> 
+				<artifactId>barn-standalone-ejb</artifactId> 
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.lorislab.barn</groupId>
-				<artifactId>barn-standalone-ejb</artifactId> 
+				<artifactId>barn-transformer</artifactId> 
 				<version>${project.version}</version>
-			</dependency>			
+			</dependency>						
 		</dependencies>
 	</dependencyManagement>
 	

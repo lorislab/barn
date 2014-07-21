@@ -9,10 +9,10 @@
         
 	<modules>
 		<module>barn-api</module>
-		<module>barn-adapter-resteasy</module>
 		<module>barn-db</module>
 		<module>barn-standalone-ejb</module>
 		<module>barn-bom</module>
+		<module>barn-transformer</module>
 	</modules>
 	
 	<scm>
@@ -44,6 +44,16 @@
 	<!-- Dependency management -->
 	<dependencyManagement>
 		<dependencies>
+			
+			<!-- TRANSFORMER -->
+			<dependency>
+				<groupId>org.lorislab.transformer</groupId>
+				<artifactId>transformer-bom</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+				<type>pom</type>
+				<scope>import</scope>				
+			</dependency>
+
 			<!-- JEL -->
 			<dependency>
 				<groupId>org.lorislab.jel</groupId>
@@ -153,8 +163,7 @@
 					<configuration>
 						<aggregate>true</aggregate>
 						<links>
-							<link>http://java.sun.com/javase/7/docs/api/</link>
-							<link>http://java.sun.com/javaee/6/docs/api/</link>
+							<link>http://docs.oracle.com/javase/7/docs/api/</link>
 						</links>
 					</configuration>
 				</plugin>

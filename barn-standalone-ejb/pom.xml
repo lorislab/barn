@@ -16,7 +16,12 @@
 			<groupId>org.lorislab.barn</groupId>
 			<artifactId>barn-api</artifactId>
 			<version>${project.version}</version>
-		</dependency>				
+		</dependency>	
+		<dependency>
+			<groupId>org.lorislab.barn</groupId>
+			<artifactId>barn-transformer</artifactId>
+			<version>${project.version}</version>
+		</dependency>					
 		<!-- EJB -->
 		<dependency>
 			<groupId>org.jboss.spec.javax.ejb</groupId>

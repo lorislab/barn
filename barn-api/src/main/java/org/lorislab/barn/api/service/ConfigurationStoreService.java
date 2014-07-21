@@ -17,8 +17,6 @@ package org.lorislab.barn.api.service;
 
 import java.util.List;
 import java.util.Set;
-import java.util.Stack;
-import org.lorislab.barn.api.model.Attribute;
 import org.lorislab.barn.api.model.Config;
 
 /**

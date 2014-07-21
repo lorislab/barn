@@ -32,7 +32,7 @@ import org.lorislab.barn.api.model.Config;
 import org.lorislab.barn.api.service.ApplicationService;
 import org.lorislab.barn.api.service.ConfigurationService;
 import org.lorislab.barn.api.service.ConfigurationStoreService;
-import org.lorislab.barn.api.util.ModelUtil;
+import org.lorislab.barn.transformer.ModelTransformer;
 
 /**
  * The configuration service.
@@ -94,7 +94,7 @@ public class ConfigurationStandaloneServiceBean implements ConfigurationService 
             List<Config> configs = service.getAllConfig(application, version);
             if (configs != null) {
                 for (Config config : configs) {
-                    Object tmp = ModelUtil.createObject(config);
+                    Object tmp = ModelTransformer.createObject(config);
                     cache.put(tmp.getClass(), tmp);
                 }
             }
@@ -113,9 +113,9 @@ public class ConfigurationStandaloneServiceBean implements ConfigurationService 
             Class clazz = data.getClass();
             
             try {
-                Set<String> names = ModelUtil.getFieldNames(clazz);
+                Set<String> names = ModelTransformer.getFieldNames(clazz);
                 Config config = service.getConfigByType(application, version, data.getClass().getName(), names);                                           
-                ModelUtil.updateModel(config.getAttributes(), data);
+                ModelTransformer.updateModel(config.getAttributes(), data);
                 service.saveConfig(config);
                 
             } catch (Exception ex) {
@@ -134,7 +134,7 @@ public class ConfigurationStandaloneServiceBean implements ConfigurationService 
     public <T> T getConfiguration(Class<T> clazz) {
         T result = (T) cache.get(clazz);
         if (result == null) {
-            result = (T) ModelUtil.createInstance(clazz.getName());
+            result = (T) ModelTransformer.createInstance(clazz.getName());
             result = setConfiguration(result);
         }
         return result;

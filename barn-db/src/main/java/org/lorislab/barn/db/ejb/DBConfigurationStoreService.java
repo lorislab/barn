@@ -15,7 +15,6 @@
  */
 package org.lorislab.barn.db.ejb;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,10 +25,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import org.lorislab.barn.api.model.Config;
 import org.lorislab.barn.api.service.ConfigurationStoreService;
-import org.lorislab.barn.db.model.DBApplication;
 import org.lorislab.barn.db.model.DBAttribute;
 import org.lorislab.barn.db.model.DBConfig;
-import org.lorislab.jel.ejb.exception.ServiceException;
 
 /**
  * The DB configuration store service.
@@ -42,12 +39,6 @@ import org.lorislab.jel.ejb.exception.ServiceException;
 public class DBConfigurationStoreService implements ConfigurationStoreService {
 
     /**
-     * The application service.
-     */
-    @EJB
-    private DBApplicationService appService;
-
-    /**
      * The configuration service.
      */
     @EJB
@@ -57,8 +48,8 @@ public class DBConfigurationStoreService implements ConfigurationStoreService {
      * {@inheritDoc}
      */
     @Override
-    public List getAllConfig(String application, String version) throws Exception {
-        return configService.getAllConfig(application, version);
+    public List getAllConfig() throws Exception {
+        return configService.getAllConfig();
     }
 
     /**
@@ -77,25 +68,13 @@ public class DBConfigurationStoreService implements ConfigurationStoreService {
      * {@inheritDoc}
      */    
     @Override
-    public Config getConfigByType(String application, String release, String type, Set<String> attributes) throws Exception {
-        DBConfig result = configService.getConfigByType(application, release, type);
+    public Config getConfigByType(String type, Set<String> attributes) throws Exception {
+        DBConfig result = configService.getConfigByType(type);
         
         // create new configuration
         if (result == null) {
             result = new DBConfig();
-            result.setType(type);
-
-            // check the application
-            DBApplication app = appService.getApplication(application, release);
-            if (app == null) {
-                app = new DBApplication();
-                app.setName(application);
-                app.setRelease(release);
-                app.setDate(new Date());
-                appService.saveApplication(app);
-            }
-
-            result.setApplication(app);
+            result.setType(type);        
         }
         
         // check the attributes

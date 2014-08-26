@@ -17,7 +17,6 @@ package org.lorislab.barn.db.ejb;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -26,12 +25,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import org.lorislab.barn.api.service.ConfigurationStoreService;
-import org.lorislab.barn.db.model.DBApplication;
-import org.lorislab.barn.db.model.DBApplication_;
 import org.lorislab.barn.db.model.DBConfig;
 import org.lorislab.barn.db.model.DBConfig_;
 import org.lorislab.jel.ejb.services.AbstractEntityServiceBean;
@@ -62,32 +57,14 @@ public class DBConfigService extends AbstractEntityServiceBean<DBConfig> {
     /**
      * Gets all configuration models.
      *
-     * @param application the application.
-     * @param release the version.
      * @return the list of all configuration models.
      */
-    public List<DBConfig> getAllConfig(String application, String release) {
+    public List<DBConfig> getAllConfig() {
         List<DBConfig> result;
-
-        CriteriaBuilder cb = getBaseEAO().getCriteriaBuilder();
         CriteriaQuery<DBConfig> cq = getBaseEAO().createCriteriaQuery();
-        Root<DBConfig> root = cq.from(DBConfig.class);
-
-        List<Predicate> predicates = new ArrayList<>();
-
-        if (application != null ) {
-            Join<DBConfig, DBApplication> join = root.join(DBConfig_.application);
-            predicates.add(cb.equal(join.get(DBApplication_.name), application));
-            predicates.add(cb.equal(join.get(DBApplication_.release), release));
-        }
-
-        if (!predicates.isEmpty()) {
-            cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
-        }
-
+        cq.from(DBConfig.class);
         TypedQuery<DBConfig> query = getBaseEAO().createTypedQuery(cq);
         result = query.getResultList();
-
         return result;
     }
 
@@ -105,12 +82,10 @@ public class DBConfigService extends AbstractEntityServiceBean<DBConfig> {
     /**
      * Gets the configuration model by type.
      *
-     * @param application the application.
-     * @param version the version.
      * @param type the type.
      * @return the corresponding configuration model to the type.
      */
-    public DBConfig getConfigByType(String application, String version, String type) {
+    public DBConfig getConfigByType(String type) {
         DBConfig result = null;
 
         CriteriaBuilder cb = getBaseEAO().getCriteriaBuilder();
@@ -119,12 +94,6 @@ public class DBConfigService extends AbstractEntityServiceBean<DBConfig> {
 
         List<Predicate> predicates = new ArrayList<>();
         predicates.add(cb.equal(root.get(DBConfig_.type), type));
-
-        if (application != null && version != null) {
-            Join<DBConfig, DBApplication> join = root.join(DBConfig_.application);
-            predicates.add(cb.equal(join.get(DBApplication_.name), application));
-            predicates.add(cb.equal(join.get(DBApplication_.release), version));
-        }
 
         if (!predicates.isEmpty()) {
             cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));

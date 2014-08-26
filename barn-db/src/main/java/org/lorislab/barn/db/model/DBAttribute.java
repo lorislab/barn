@@ -52,6 +52,7 @@ public class DBAttribute extends Persistent implements Attribute {
      *
      * @return the name.
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -61,6 +62,7 @@ public class DBAttribute extends Persistent implements Attribute {
      *
      * @param name the name.
      */
+    @Override
     public void setName(String name) {
         this.name = name;
     }
@@ -70,6 +72,7 @@ public class DBAttribute extends Persistent implements Attribute {
      *
      * @return the value.
      */
+    @Override
     public String getValue() {
         return value;
     }
@@ -79,6 +82,7 @@ public class DBAttribute extends Persistent implements Attribute {
      *
      * @param value the value.
      */
+    @Override
     public void setValue(String value) {
         this.value = value;
     }

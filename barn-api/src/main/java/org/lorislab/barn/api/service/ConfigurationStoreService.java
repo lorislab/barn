@@ -29,12 +29,10 @@ public interface ConfigurationStoreService {
     /**
      * Gets all configuration for the application and version.
      *
-     * @param application the application.
-     * @param version the version.
      * @return the list of configuration.
      * @throws java.lang.Exception if the method fails.
      */
-    public List<Config> getAllConfig(String application, String version) throws Exception;
+    public List<Config> getAllConfig() throws Exception;
 
     /**
      * Saves the configuration.
@@ -48,13 +46,11 @@ public interface ConfigurationStoreService {
     /**
      * Gets the configuration by type or create new configuration.
      *
-     * @param application the application.
-     * @param release the version.
      * @param type the configuration class.
      * @param attributes the set of attributes.
      * @return the configuration.
      * @throws java.lang.Exception if the method fails.
      */
-    public Config getConfigByType(String application, String release, String type, Set<String> attributes) throws Exception;
+    public Config getConfigByType(String type, Set<String> attributes) throws Exception;
 
 }

@@ -24,10 +24,6 @@ import java.util.Map;
  * @author Andrej Petras
  */
 public interface Config {
- 
-    public Application getApplication();
-    
-    public void setApplication(Application application);
     
     public void setType(String type);
     

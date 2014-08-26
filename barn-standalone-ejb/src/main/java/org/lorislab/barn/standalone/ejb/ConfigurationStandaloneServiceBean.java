@@ -27,9 +27,7 @@ import javax.ejb.Local;
 import javax.ejb.Singleton;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import org.lorislab.barn.api.factory.ServiceFactory;
 import org.lorislab.barn.api.model.Config;
-import org.lorislab.barn.api.service.ApplicationService;
 import org.lorislab.barn.api.service.ConfigurationService;
 import org.lorislab.barn.api.service.ConfigurationStoreService;
 import org.lorislab.barn.transformer.ModelTransformer;
@@ -48,16 +46,6 @@ public class ConfigurationStandaloneServiceBean implements ConfigurationService 
      * The logger for this class.
      */
     private static final Logger LOGGER = Logger.getLogger(ConfigurationStandaloneServiceBean.class.getName());
-
-    /**
-     * The application.
-     */
-    private String application;
-
-    /**
-     * The version.
-     */
-    private String version;
 
     /**
      * The cache.
@@ -86,12 +74,7 @@ public class ConfigurationStandaloneServiceBean implements ConfigurationService 
         try {
             cache = new HashMap<>();
 
-            ApplicationService appService = ServiceFactory.getApplicationService();
-            if (appService != null) {
-                application = appService.getApplication();
-                version = appService.getVersion();
-            }
-            List<Config> configs = service.getAllConfig(application, version);
+            List<Config> configs = service.getAllConfig();
             if (configs != null) {
                 for (Config config : configs) {
                     Object tmp = ModelTransformer.createObject(config);
@@ -108,13 +91,13 @@ public class ConfigurationStandaloneServiceBean implements ConfigurationService 
      */
     @Override
     public <T> T setConfiguration(T data) {
-        T result = null;
+        T result = data;
         if (data != null) {
             Class clazz = data.getClass();
             
             try {
                 Set<String> names = ModelTransformer.getFieldNames(clazz);
-                Config config = service.getConfigByType(application, version, data.getClass().getName(), names);                                           
+                Config config = service.getConfigByType(data.getClass().getName(), names);                                           
                 ModelTransformer.updateModel(config.getAttributes(), data);
                 service.saveConfig(config);
                 

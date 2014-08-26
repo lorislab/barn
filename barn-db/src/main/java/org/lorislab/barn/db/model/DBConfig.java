@@ -22,11 +22,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import org.lorislab.barn.api.model.Application;
 import org.lorislab.barn.api.model.Config;
 import org.lorislab.jel.jpa.model.Persistent;
 
@@ -45,13 +43,6 @@ public class DBConfig extends Persistent implements Config {
     private static final long serialVersionUID = 6269308858836846322L;
 
     /**
-     * The application.
-     */
-    @ManyToOne
-    @JoinColumn(name = "C_APP")
-    private DBApplication application;
-
-    /**
      * The class name.
      */
     @Column(name = "C_TYPE")
@@ -64,25 +55,6 @@ public class DBConfig extends Persistent implements Config {
     @MapKeyColumn(name = "C_NAME")
     @JoinColumn(name = "C_CONFIG")
     private final Map<String, DBAttribute> attributes = new HashMap<>();
-
-    /**
-     * Gets the application.
-     *
-     * @return the application.
-     */
-    @Override
-    public DBApplication getApplication() {
-        return application;
-    }
-
-    /**
-     * Sets the application.
-     *
-     * @param application the application.
-     */
-    public void setApplication(DBApplication application) {
-        this.application = application;
-    }
 
     /**
      * Gets the type name.
@@ -112,17 +84,6 @@ public class DBConfig extends Persistent implements Config {
     @Override
     public Map<String, DBAttribute> getAttributes() {
         return attributes;
-    }
-
-    /**
-     * Sets the application.
-     * @param application the application
-     */
-    @Override
-    public void setApplication(Application application) {
-        if (application instanceof DBApplication) {
-            this.application = (DBApplication) application;
-        }
     }
 
 }

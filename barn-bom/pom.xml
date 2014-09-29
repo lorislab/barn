@@ -5,37 +5,34 @@
         <groupId>org.lorislab.barn</groupId>
         <artifactId>barn</artifactId>
         <version>0.0.3-SNAPSHOT</version>
-		<relativePath>../</relativePath>
+        <relativePath>../</relativePath>
     </parent>
 	
     <artifactId>barn-bom</artifactId> 
     <name>barn-bom</name>
-	<packaging>pom</packaging>
+    <packaging>pom</packaging>
 
-	<!-- Runtime dependency management -->
+    <!-- Runtime dependency management -->
     <dependencyManagement>
         <dependencies>
-			<dependency>
-				<groupId>org.lorislab.barn</groupId>
-				<artifactId>barn-api</artifactId> 
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.lorislab.barn</groupId>
-				<artifactId>barn-db</artifactId> 
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.lorislab.barn</groupId>
-				<artifactId>barn-standalone-ejb</artifactId> 
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.lorislab.barn</groupId>
-				<artifactId>barn-transformer</artifactId> 
-				<version>${project.version}</version>
-			</dependency>						
-		</dependencies>
-	</dependencyManagement>
+            <dependency>
+                <groupId>org.lorislab.barn</groupId>
+                <artifactId>barn-api</artifactId> 
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.lorislab.barn</groupId>
+                <artifactId>barn-db</artifactId> 
+                <version>${project.version}</version>
+                <type>ejb</type>
+            </dependency>
+            <dependency>
+                <groupId>org.lorislab.barn</groupId>
+                <artifactId>barn-standalone-ejb</artifactId> 
+                <version>${project.version}</version>
+                <type>ejb</type>
+            </dependency>						
+        </dependencies>
+    </dependencyManagement>
 	
 </project>

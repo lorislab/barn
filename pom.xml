@@ -66,11 +66,11 @@
             <!-- EJB/Persistence libraries -->
             <dependency>
                 <groupId>org.jboss.spec</groupId>
-                <artifactId>jboss-javaee-6.0</artifactId>
-                <version>3.0.1.Final</version>
+                <artifactId>jboss-javaee-7.0</artifactId>
+                <version>1.0.2.Final</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
+            </dependency>  
 
             <!-- Hibernate -->
             <dependency>
